@@ -1,138 +1,100 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { badges } from "../data/badges";
 
 export default function Home() {
-  const [filter, setFilter] = useState("All");
-  const [dark, setDark] = useState(false);
+  const categories = Array.from(new Set(badges.map(b => b.category)));
 
-  // Load theme
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "dark") setDark(true);
-  }, []);
-
-  // Apply theme
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  }, [dark]);
-
-  const badges = [
-    {
-      title: "Adobe AEM Architect",
-      issuer: "Adobe",
-      category: "CMS",
-      impact:
-        "Architected enterprise-scale AEM platform enabling multi-brand digital experiences across banking ecosystem",
-      tags: ["Enterprise", "AEM", "Architecture"],
-    },
-    {
-      title: "Azure AI Engineer",
-      issuer: "Microsoft",
-      category: "AI",
-      impact:
-        "Designed GenAI-powered customer journey solutions using Azure AI and LLM integrations",
-      tags: ["AI", "GenAI", "Cloud"],
-    },
-  ];
-
-  const categories = ["All", ...new Set(badges.map((b) => b.category))];
-
-  const filtered =
-    filter === "All"
-      ? badges
-      : badges.filter((b) => b.category === filter);
+  const levelStyles = {
+    Master: "bg-red-100 text-red-600",
+    Expert: "bg-blue-100 text-blue-600",
+    Associate: "bg-green-100 text-green-600",
+    Professional: "bg-purple-100 text-purple-600",
+    Fundamental: "bg-gray-100 text-gray-600",
+  };
 
   return (
-    <main
-      className="min-h-screen p-10 
-    bg-gradient-to-br 
-    from-gray-50 via-white to-gray-100 
-    dark:from-gray-900 dark:via-gray-800 dark:to-black 
-    text-gray-900 dark:text-white"
-    >
-      <div className="max-w-6xl mx-auto">
-        {/* DARK MODE */}
-        <button
-          onClick={() => setDark(!dark)}
-          className="mb-6 px-4 py-2 rounded-full border 
-          bg-white/60 dark:bg-gray-800/60 backdrop-blur-md"
-        >
-          {dark ? "Light ☀️" : "Dark 🌙"}
-        </button>
+    <main className="min-h-screen bg-gray-50 px-6 py-10">
+      <div className="max-w-7xl mx-auto">
 
-        {/* HERO */}
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-6xl font-bold tracking-tight mb-6 
-          bg-gradient-to-r from-black to-gray-500 
-          dark:from-white dark:to-gray-400 
-          bg-clip-text text-transparent"
-        >
-          Sudesh Bhadouria 🚀
-        </motion.h1>
+        {/* 🔥 HEADER WITH PHOTO */}
+        <div className="flex items-center gap-6 mb-12">
+          <img
+            src="/images/profile.jpg"
+            className="w-20 h-20 rounded-full object-cover border"
+          />
 
-        {/* FILTERS */}
-        <div className="flex gap-3 mb-10">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-medium 
-              transition-all duration-200 border backdrop-blur-md
-              ${
-                filter === cat
-                  ? "bg-black text-white dark:bg-white dark:text-black"
-                  : "bg-white/60 dark:bg-gray-800/60 hover:scale-105"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          <div>
+            <h1 className="text-3xl font-bold">
+              Sudesh Bhadouria
+            </h1>
+            <p className="text-gray-600 text-sm mt-1">
+              Enterprise Architect specializing in AI, AEM, and Digital Platforms.
+              Driving scalable banking and GenAI solutions.
+            </p>
+          </div>
         </div>
 
-        {/* GRID */}
-        <div className="grid gap-6">
-          {filtered.map((b, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="group relative p-6 rounded-3xl 
-              bg-white/70 dark:bg-gray-800/70 
-              backdrop-blur-xl 
-              border border-white/20 
-              shadow-lg hover:shadow-2xl 
-              transition-all duration-300 
-              hover:-translate-y-1"
-            >
-              <h3 className="text-lg font-semibold">{b.title}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {b.issuer}
-              </p>
+        {/* 🔥 SECTIONS */}
+        {categories.map(category => (
+          <div key={category} className="mb-10">
 
-              <p className="text-sm mt-3">{b.impact}</p>
+            {/* TITLE */}
+            <h2 className="text-lg font-semibold mb-4">
+              {category} Certifications
+            </h2>
 
-              {/* TAGS */}
-              <div className="flex gap-2 mt-4 flex-wrap">
-                {b.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs px-3 py-1 rounded-full 
-                    bg-black text-white dark:bg-white dark:text-black"
+            {/* GRID */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {badges
+                .filter(b => b.category === category)
+                .map((b, i) => (
+                  <a
+                    key={i}
+                    href={b.link}
+                    target="_blank"
+                    className="block bg-white border rounded-lg p-4 hover:shadow-md transition"
                   >
-                    {tag}
-                  </span>
+                    {/* TOP */}
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-medium text-sm leading-tight">
+                        {b.title}
+                      </h3>
+                      <img src={b.image} className="h-8" />
+                    </div>
+
+                    {/* ISSUER */}
+                    <p className="text-xs text-gray-500 mt-1">
+                      {b.issuer}
+                    </p>
+
+                    {/* LEVEL */}
+                    <span className={`inline-block mt-2 px-2 py-0.5 text-xs rounded ${levelStyles[b.level]}`}>
+                      {b.level}
+                    </span>
+
+                    {/* META */}
+                    <div className="text-xs text-gray-500 mt-2">
+                      <p>Issued: {b.issued}</p>
+                      {b.expiry && <p>Expires: {b.expiry}</p>}
+                    </div>
+
+                    {/* SKILLS */}
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {b.skills?.map(skill => (
+                        <span
+                          key={skill}
+                          className="text-[10px] bg-gray-100 px-2 py-0.5 rounded"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </a>
                 ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+            </div>
+
+          </div>
+        ))}
+
       </div>
     </main>
   );
